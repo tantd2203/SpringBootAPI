@@ -50,6 +50,40 @@ public class HomeController {
         ) : ResponseEntity.status(HttpStatus.OK).body(
                 new ResponseObject("OK", "insert Success", repository.save(newProduct))
         );
+    }
 
+    @PutMapping("/{id}")
+    ResponseEntity<ResponseObject> updateProduct(@RequestBody Products newProduct, @PathVariable long id) {
+        // map  là ánh xạ
+        Products updateProduct = repository.findById(id)
+                .map(products -> {
+                    products.setProductName(newProduct.getProductName());
+                    products.setPrice(newProduct.getPrice());
+                    products.setYear(newProduct.getYear());
+                    products.setUrl(newProduct.getUrl());
+                    return repository.save(products);
+                    // OrElseGet trường hợp k tìm thấy id prodcut nên nó thêm mới
+                }).orElseGet(() -> {
+                    return repository.save(newProduct);
+                });
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseObject("OK", "update success ", updateProduct)
+        );
+    }
+
+    @DeleteMapping ("/{id}")
+    ResponseEntity<ResponseObject> deleteProduct(@PathVariable long id){
+        boolean exists = repository.existsById(id);
+        //existsById trả về true false xem thử trong data đã có chưa
+        if (exists){
+            repository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("ok","Delete success","")
+            );
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ResponseObject("ok","Delete fail",""));
+
+        }
     }
 }
