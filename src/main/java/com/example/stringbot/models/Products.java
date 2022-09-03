@@ -2,20 +2,19 @@ package com.example.stringbot.models;
 
 import jdk.jfr.Enabled;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Products {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  long id;
+    @Column(nullable = false,unique = true,length = 300)
     private  String productName;
     private int year;
     private  Double price;
     private  String url;
+
 
     public  Products(){
 
